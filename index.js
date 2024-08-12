@@ -1,9 +1,8 @@
 // TASK: import helper functions from utils
-
 import { getTasks, saveTasks, createNewTask, patchTask, putTask, deleteTask } from './utils/taskFunctions.js'
-// TASK: import initialData
 
-import initialData from './utils/initialData.js'
+// TASK: import initialData
+import initialData from './initialData.js'
 
 
 /*************************************************************************************************************************************************
@@ -20,8 +19,15 @@ function initializeData() {
   }
 }
 
+
+
 // TASK: Get elements from the DOM
 const elements = {
+//   headerBoardName: document.getElementById('header-board-name'),
+//   boardContainer: document.getElementById('board-container'),
+//   boardsNavLinksDiv: document.getElementById('boards-nav-links-div'),
+//   filterDiv: document.getElementById('filter-div'),
+//   modalWindow: document.getElementById('modal-window'),
 
 }
 
@@ -35,7 +41,7 @@ function fetchAndDisplayBoardsAndTasks() {
   displayBoards(boards);
   if (boards.length > 0) {
     const localStorageBoard = JSON.parse(localStorage.getItem("activeBoard"))
-    activeBoard = localStorageBoard ? localStorageBoard ;  boards[0]; 
+    activeBoard = localStorageBoard ? localStorageBoard :  boards[0]; /// replaced ; with :
     elements.headerBoardName.textContent = activeBoard
     styleActiveBoard(activeBoard)
     refreshTasksUI();
@@ -47,32 +53,35 @@ function fetchAndDisplayBoardsAndTasks() {
 function displayBoards(boards) {
   const boardsContainer = document.getElementById("boards-nav-links-div");
   boardsContainer.innerHTML = ''; // Clears the container
+
   boards.forEach(board => {
     const boardElement = document.createElement("button");
     boardElement.textContent = board;
     boardElement.classList.add("board-btn");
-    boardElement.click()  { 
+
+    boardElement.addEventListener("click", () => { //Added eventlistener for click to update headerBoardName
       elements.headerBoardName.textContent = board;
       filterAndDisplayTasksByBoard(board);
       activeBoard = board //assigns active board
       localStorage.setItem("activeBoard", JSON.stringify(activeBoard))
       styleActiveBoard(activeBoard)
-    };
+    });
+
     boardsContainer.appendChild(boardElement);
   });
-
 }
 
 // Filters tasks corresponding to the board name and displays them on the DOM.
 // TASK: Fix Bugs
 function filterAndDisplayTasksByBoard(boardName) {
   const tasks = getTasks(); // Fetch tasks from a simulated local storage function
-  const filteredTasks = tasks.filter(task => task.board = boardName);
+  const filteredTasks = tasks.filter(task => task.board === boardName); // Added strict equality operator to filter tasks based on board name
 
   // Ensure the column titles are set outside of this function or correctly initialized before this function runs
 
   elements.columnDivs.forEach(column => {
     const status = column.getAttribute("data-status");
+
     // Reset column content while preserving the column title
     column.innerHTML = `<div class="column-head-div">
                           <span class="dot" id="${status}-dot"></span>
@@ -82,14 +91,14 @@ function filterAndDisplayTasksByBoard(boardName) {
     const tasksContainer = document.createElement("div");
     column.appendChild(tasksContainer);
 
-    filteredTasks.filter(task => task.status = status).forEach(task => { 
+    filteredTasks.filter(task => task.status === status).forEach(task => {  // Added strict equality operator to filter tasks based on status
       const taskElement = document.createElement("div");
       taskElement.classList.add("task-div");
       taskElement.textContent = task.title;
       taskElement.setAttribute('data-task-id', task.id);
 
       // Listen for a click event on each task and open a modal
-      taskElement.click() => { 
+      taskElement.addEventListener("click",() => { // Added eventlistener for click
         openEditTaskModal(task);
       });
 
@@ -106,13 +115,13 @@ function refreshTasksUI() {
 // Styles the active board by adding an active class
 // TASK: Fix Bugs
 function styleActiveBoard(boardName) {
-  document.querySelectorAll('.board-btn').foreach(btn => { 
+  document.querySelectorAll('.board-btn').forEach(btn => { //Spelling of forEach fixed 
     
     if(btn.textContent === boardName) {
-      btn.add('active') 
+      btn.classList.add('active') //This correctly adds the 'active' class to the button element.
     }
     else {
-      btn.remove('active'); 
+      btn.classList.remove('active'); //This correctly removes the 'active' class to the button element.
     }
   });
 }
@@ -146,7 +155,7 @@ function addTaskToUI(task) {
 function setupEventListeners() {
   // Cancel editing task event listener
   const cancelEditBtn = document.getElementById('cancel-edit-btn');
-  cancelEditBtn.click() => toggleModal(false, elements.editTaskModal));
+  cancelEditBtn.addEventListener("click", () => toggleModal(false, elements.editTaskModal)); //corrected event listener
 
   // Cancel adding new task event listener
   const cancelAddTaskBtn = document.getElementById('cancel-add-task-btn');
@@ -162,8 +171,8 @@ function setupEventListeners() {
   });
 
   // Show sidebar event listener
-  elements.hideSideBarBtn.click() => toggleSidebar(false));
-  elements.showSideBarBtn.click() => toggleSidebar(true));
+  elements.hideSideBarBtn.addEventListener("click", () => toggleSidebar(false)); //fixed event listener
+  elements.showSideBarBtn.addEventListener("click",() => toggleSidebar(true)); // fixed event Listener
 
   // Theme switch event listener
   elements.themeSwitch.addEventListener('change', toggleTheme);
