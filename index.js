@@ -1,4 +1,5 @@
 // TASK: import helper functions from utils
+// The import statement is used to bring in modules or data from other files into the current script
 import {
   getTasks,
   createNewTask,
@@ -15,9 +16,11 @@ import { initialData } from "./initialData.js";
 
 // Function checks if local storage already has data, if not it loads initialData to localStorage
 function initializeData() {
+  //the initializeData function is designed to check if the tasks data is already stored in localStorage. If it isn’t, the function will store the initial data.
+
   if (!localStorage.getItem("tasks")) {
-    localStorage.setItem("tasks", JSON.stringify(initialData));
-    localStorage.setItem("showSideBar", "true");
+    localStorage.setItem("tasks", JSON.stringify(initialData)); // Store the initial data in localStorage
+    localStorage.setItem("showSideBar", "true"); //The setItem method is used again to store a string value 'true' under the key showSideBar.
   } else {
     console.log("Data already exists in localStorage");
   }
@@ -37,11 +40,11 @@ const elements = {
   addNewTaskBtn: document.getElementById("add-new-task-btn"),
   editBoardBtn: document.getElementById("edit-board-btn"),
   deleteBoardBtn: document.getElementById("deleteBoardBtn"),
-  tasksContainers: document.querySelectorAll(".tasks-container"),
-  columnDivs: document.querySelectorAll(".column-div"),
+  tasksContainers: document.querySelectorAll(".tasks-container"), // Select all tasks containers
+  columnDivs: document.querySelectorAll(".column-div"), // Select all column divs
   newTaskModalWindow: document.getElementById("new-task-modal-window"),
   editTaskModalWindow: document.querySelector(".edit-task-modal-window"),
-  modalWindow: document.querySelector(".modal-window"),
+  modalWindow: document.querySelector(".modal-window"), // Select the modal window
   titleInput: document.getElementById("title-input"),
   descInput: document.getElementById("desc-input"),
   selectStatus: document.getElementById("select-status"),
@@ -59,8 +62,8 @@ const elements = {
 
 let activeBoard = "";
 
-// Extracts unique board names from tasks
-// TASK: FIX BUGS
+//Extracts unique board names from tasks
+//TASK: FIX BUGS
 function fetchAndDisplayBoardsAndTasks() {
   const tasks = getTasks();
   const boards = [...new Set(tasks.map((task) => task.board).filter(Boolean))];
@@ -186,9 +189,10 @@ function addTaskToUI(task) {
 function setupEventListeners() {
   // Cancel editing task event listener
   const cancelEditBtn = document.getElementById("cancel-edit-btn");
-  cancelEditBtn.addEventListener("click", () =>
-    toggleModal(false, elements.editTaskModal)
-  ); //corrected event listener
+  cancelEditBtn.addEventListener("click", () => {
+    toggleModal(false, elements.editTaskModal);
+    elements.filterDiv.style.display = "none";
+  }); // corrected event listener
 
   // Cancel adding new task event listener
   const cancelAddTaskBtn = document.getElementById("cancel-add-task-btn");
@@ -333,7 +337,7 @@ function saveTaskChanges(taskId) {
 /*************************************************************************************************************************************************/
 // Initialize the application when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
-  initialData();
+  initializeData();
   init(); // init is called after the DOM is fully loaded
 });
 
