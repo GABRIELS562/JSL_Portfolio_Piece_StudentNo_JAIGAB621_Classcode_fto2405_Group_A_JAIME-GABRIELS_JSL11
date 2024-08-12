@@ -1,8 +1,8 @@
 // TASK: import helper functions from utils
-import { getTasks, saveTasks, createNewTask, patchTask, putTask, deleteTask } from './utils/taskFunctions.js'
+import { getTasks, createNewTask, patchTask, putTask, deleteTask } from './utils/taskFunctions.js'
 
 // TASK: import initialData
-import initialData from './initialData.js'
+import  {initialData} from './initialData.js'
 
 
 /*************************************************************************************************************************************************
@@ -192,7 +192,7 @@ function setupEventListeners() {
 // Toggles tasks modal
 // Task: Fix bugs
 function toggleModal(show, modal = elements.modalWindow) {
-  modal.style.display = show ? 'block' => 'none'; 
+  modal.style.display = show ? 'block' : 'none'; //replaced function with tenary operator
 }
 
 /*************************************************************************************************************************************************
@@ -203,7 +203,13 @@ function addTask(event) {
   event.preventDefault(); 
 
   //Assign user input to the task object
-    const task = {
+    const task = {id: Date.now(), // Unique identifier for the task
+      title: document.getElementById('title-input').value, // Input with id 'title-input'
+      description: document.getElementById('desc-input').value, // Textarea with id 'desc-input'
+      board: activeBoard, // Use the currently active board
+      status: document.getElementById('select-status').value, // Select dropdown with id 'select-status'
+    };
+
       
     };
     const newTask = createNewTask(task);
