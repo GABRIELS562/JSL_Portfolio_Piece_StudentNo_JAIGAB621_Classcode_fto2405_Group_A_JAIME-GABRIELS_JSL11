@@ -1,8 +1,10 @@
+
 // TASK: import helper functions from utils
 import { getTasks, createNewTask, patchTask, putTask, deleteTask } from './utils/taskFunctions.js'
-
 // TASK: import initialData
-import  {initialData} from './initialData.js'
+import { initialData } from './initialData.js'
+
+
 
 
 /*************************************************************************************************************************************************
@@ -19,17 +21,43 @@ function initializeData() {
   }
 }
 
+//initializeData();
+
 
 
 // TASK: Get elements from the DOM
 const elements = {
-//   headerBoardName: document.getElementById('header-board-name'),
-//   boardContainer: document.getElementById('board-container'),
-//   boardsNavLinksDiv: document.getElementById('boards-nav-links-div'),
-//   filterDiv: document.getElementById('filter-div'),
-//   modalWindow: document.getElementById('modal-window'),
+  sideBar: document.getElementById("side-bar-div"),
+  boardsNavLinksDiv: document.getElementById("boards-nav-links-div"),
+  themeSwitch: document.getElementById("switch"),
+  hideSideBarBtn: document.getElementById("hide-side-bar-btn"),
+  showSideBarBtn: document.getElementById("show-side-bar-btn"),
+  headerBoardName: document.getElementById("header-board-name"),
+  dropdownBtn: document.getElementById("dropdownBtn"),
+  addNewTaskBtn: document.getElementById("add-new-task-btn"),
+  editBoardBtn: document.getElementById("edit-board-btn"),
+  deleteBoardBtn: document.getElementById("deleteBoardBtn"),
+  tasksContainers: document.querySelectorAll(".tasks-container"),
+  columnDivs: document.querySelectorAll(".column-div"),
+  newTaskModalWindow: document.getElementById("new-task-modal-window"),
+  editTaskModalWindow: document.querySelector(".edit-task-modal-window"),
+  modalWindow: document.querySelector(".modal-window"),
+  titleInput: document.getElementById("title-input"),
+  descInput: document.getElementById("desc-input"),
+  selectStatus: document.getElementById("select-status"),
+  createTaskBtn: document.getElementById("create-task-btn"),
+  cancelAddTaskBtn: document.getElementById("cancel-add-task-btn"),
+  editTaskForm: document.getElementById("edit-task-form"),
+  editTaskTitleInput: document.getElementById("edit-task-title-input"),
+  editTaskDescInput: document.getElementById("edit-task-desc-input"),
+  editSelectStatus: document.getElementById("edit-select-status"),
+  saveTaskChangesBtn: document.getElementById("save-task-changes-btn"),
+  cancelEditBtn: document.getElementById("cancel-edit-btn"),
+  deleteTaskBtn: document.getElementById("delete-task-btn"),
+  filterDiv: document.getElementById("filterDiv"),
+};
 
-}
+
 
 let activeBoard = ""
 
@@ -254,7 +282,29 @@ function addTask(event) {
   }
 
 
-function openEditTaskModal(task) {
+  function openEditTaskModal(task) {
+    // Set task details in modal inputs
+    document.getElementById('edit-task-title-input').value = task.title;
+    document.getElementById('edit-task-desc-input').value = task.description;
+    document.getElementById('edit-select-status').value = task.status;
+  
+    // Get button elements from the task modal
+    const saveBtn = document.getElementById('save-task-changes-btn');
+    const deleteBtn = document.getElementById('delete-task-btn');
+  
+    // Call saveTaskChanges upon click of Save Changes button
+    saveBtn.onclick = () => saveTaskChanges(task.id);
+  
+    // Delete task using a helper function and close the task modal
+    deleteBtn.onclick = () => {
+      deleteTask(task.id); // Implement this function to delete the task
+      toggleModal(false, elements.editTaskModal);
+      refreshTasksUI();
+    };
+  
+
+    toggleModal(true, elements.editTaskModal); // Show the edit task modal
+  }
   // Set task details in modal inputs
   
 
@@ -268,9 +318,30 @@ function openEditTaskModal(task) {
 
 
   toggleModal(true, elements.editTaskModal); // Show the edit task modal
-}
+
 
 function saveTaskChanges(taskId) {
+  // Get new user inputs
+  const updatedTitle = document.getElementById('edit-task-title-input').value;
+  const updatedDescription = document.getElementById('edit-task-desc-input').value;
+  const updatedStatus = document.getElementById('edit-select-status').value;
+
+  // Create an object with the updated task details
+  const updatedTask = {
+    id: taskId,
+    title: updatedTitle,
+    description: updatedDescription,
+    board: activeBoard,
+    status: updatedStatus,
+  };
+
+  // Update task using a helper function
+  updateTaskInLocalStorage(updatedTask); // Implement this function to update the task in localStorage
+
+  // Close the modal and refresh the UI to reflect the changes
+  toggleModal(false, elements.editTaskModal);
+  refreshTasksUI();
+}
   // Get new user inputs
   
 
@@ -283,7 +354,8 @@ function saveTaskChanges(taskId) {
   // Close the modal and refresh the UI to reflect the changes
 
   refreshTasksUI();
-}
+
+
 
 /*************************************************************************************************************************************************/
 
