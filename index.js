@@ -126,14 +126,16 @@ function filterAndDisplayTasksByBoard(boardName) {
       taskElement.setAttribute('data-task-id', task.id);
 
       // Listen for a click event on each task and open a modal
-      taskElement.addEventListener("click",() => { // Added eventlistener for click
+      taskElement.addEventListener("click", () => {
         openEditTaskModal(task);
+        elements.editTaskModalWindow.style.display = "block";
       });
 
       tasksContainer.appendChild(taskElement);
     });
-  });
+});
 }
+
 
 
 function refreshTasksUI() {
@@ -143,10 +145,10 @@ function refreshTasksUI() {
 // Styles the active board by adding an active class
 // TASK: Fix Bugs
 function styleActiveBoard(boardName) {
-  document.querySelectorAll('.board-btn').forEach(btn => { //Spelling of forEach fixed 
+  document.querySelectorAll('.board-btn').forEach((btn) => { //Spelling of forEach fixed 
     
     if(btn.textContent === boardName) {
-      btn.classList.add('active') //This correctly adds the 'active' class to the button element.
+      btn.classList.add('active'); //This correctly adds the 'active' class to the button element.
     }
     else {
       btn.classList.remove('active'); //This correctly removes the 'active' class to the button element.
@@ -175,7 +177,7 @@ function addTaskToUI(task) {
   taskElement.textContent = task.title; // Modify as needed
   taskElement.setAttribute('data-task-id', task.id);
   
-  tasksContainer.appendChild(); 
+  tasksContainer.appendChild(taskElement); 
 }
 
 
@@ -193,11 +195,11 @@ function setupEventListeners() {
   });
 
   // Clicking outside the modal to close it
-  elements.filterDiv.addEventListener('click', () => {
-    toggleModal(false);
-    elements.filterDiv.style.display = 'none'; // Also hide the filter overlay
+  elements.filterDiv.addEventListener("click", () => {
+    toggleModal(false, elements.modalWindow);
+    toggleModal(false, elements.editTaskModal);
+    elements.filterDiv.style.display = "none"; // Also hide the filter overlay
   });
-
   // Show sidebar event listener
   elements.hideSideBarBtn.addEventListener("click", () => toggleSidebar(false)); //fixed event listener
   elements.showSideBarBtn.addEventListener("click",() => toggleSidebar(true)); // fixed event Listener
@@ -251,8 +253,7 @@ function addTask(event) {
     }
 
 
-
-
+// Toggle the visibility of the sidebar
 
   function toggleSidebar(show) {
     const sidebar = document.getElementById('side-bar-div');
