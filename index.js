@@ -203,7 +203,8 @@ function addTask(event) {
   event.preventDefault(); 
 
   //Assign user input to the task object
-    const task = {id: Date.now(), // Unique identifier for the task
+    const task = 
+    {id: Date.now(), // Unique identifier for the task
       title: document.getElementById('title-input').value, // Input with id 'title-input'
       description: document.getElementById('desc-input').value, // Textarea with id 'desc-input'
       board: activeBoard, // Use the currently active board
@@ -220,17 +221,37 @@ function addTask(event) {
       event.target.reset();
       refreshTasksUI();
     }
-}
 
 
-function toggleSidebar(show) {
+
+
+
+  function toggleSidebar(show) {
+    const sidebar = document.getElementById('side-bar-div');
+    const showSidebarBtn = document.getElementById('show-side-bar-btn');
+  
+    if (show) {
+      sidebar.style.display = 'block';
+      showSidebarBtn.style.display = 'none';
+    } else {
+      sidebar.style.display = 'none';
+      showSidebarBtn.style.display = 'block';
+    }
+  
+    localStorage.setItem('showSideBar', show); // Store sidebar state in localStorage
+  }
  
-}
 
-function toggleTheme() {
- 
-}
 
+  function toggleTheme() {
+    const isLightTheme = document.body.classList.toggle('light-theme');
+    
+    if (isLightTheme) {
+      localStorage.setItem('light-theme', 'enabled');
+    } else {
+      localStorage.setItem('light-theme', 'disabled');
+    }
+  }
 
 
 function openEditTaskModal(task) {
