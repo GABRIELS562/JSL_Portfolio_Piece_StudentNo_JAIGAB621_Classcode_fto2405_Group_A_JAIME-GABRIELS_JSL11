@@ -29,10 +29,11 @@ function initializeData() {
 //initializeData();
 
 // TASK: Get elements from the DOM
+//
 const elements = {
   sideBar: document.getElementById("side-bar-div"),
   boardsNavLinksDiv: document.getElementById("boards-nav-links-div"),
-  themeSwitch: document.getElementById("switch"),
+  toggleTheme: document.getElementById("switch"),
   hideSideBarBtn: document.getElementById("hide-side-bar-btn"),
   showSideBarBtn: document.getElementById("show-side-bar-btn"),
   headerBoardName: document.getElementById("header-board-name"),
@@ -94,7 +95,7 @@ function displayBoards(boards) {
       filterAndDisplayTasksByBoard(board);
       activeBoard = board; //assigns active board
       localStorage.setItem("activeBoard", JSON.stringify(activeBoard));
-      styleActiveBoard(activeBoard);
+      styleActiveBoard(activeBoard); //////////////////////////////???????
     });
 
     boardsContainer.appendChild(boardElement);
@@ -212,7 +213,7 @@ function setupEventListeners() {
   elements.showSideBarBtn.addEventListener("click", () => toggleSidebar(true)); // fixed event Listener
 
   // Theme switch event listener
-  elements.themeSwitch.addEventListener("change", toggleTheme);
+  elements.toggleTheme.addEventListener("change", toggleTheme);
 
   // Show Add New Task Modal event listener
   elements.addNewTaskBtn.addEventListener("click", () => {
