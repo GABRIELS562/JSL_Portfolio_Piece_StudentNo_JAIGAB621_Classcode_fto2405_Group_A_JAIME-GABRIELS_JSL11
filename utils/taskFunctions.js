@@ -2,13 +2,13 @@
 
 // Simulate fetching tasks from localStorage
 export const getTasks = () => {
-  const tasks = localStorage.getItem("tasks");
+  const tasks = localStorage.getItem("tasks"); ///did you assign a value to tasks?
   return tasks ? JSON.parse(tasks) : [];
 };
 
 // Simulate saving tasks to localStorage
 const saveTasks = (tasks) => {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+  localStorage.setItem("tasks", JSON.stringify(tasks)); // converts javascript string to json
 };
 
 export const createNewTask = (task) => {
