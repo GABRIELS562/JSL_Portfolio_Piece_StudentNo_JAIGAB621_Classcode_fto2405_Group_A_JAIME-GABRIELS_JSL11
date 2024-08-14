@@ -255,41 +255,42 @@ function toggleModal(show, modal = elements.modalWindow) {
  * **********************************************************************************************************************************************/
 
 function addTask(event) {
-  event.preventDefault();
+  event.preventDefault(); //Prevents the default behavior of the form submission, which is to refresh the page.
 
   //Assign user input to the task object
   const task = {
-    status: document.getElementById("select-status").value,
-    title: document.getElementById("title-input").value,
-    description: document.getElementById("desc-input").value,
-    board: activeBoard,
+    status: document.getElementById("select-status").value, //Gets the value from the status select dropdown (select-status), representing the task’s status.
+    title: document.getElementById("title-input").value, //Gets the value from the title input field (title-input), representing the task’s title.
+    description: document.getElementById("desc-input").value, //Gets the value from the description input field (desc-input), representing the task’s description.
+    board: activeBoard, //Uses the activeBoard variable to assign the current active board to the task.
   };
-  const newTask = createNewTask(task);
+  const newTask = createNewTask(task); //should handle adding the task to a data store (e.g., localStorage) and return the newly created task object.
   if (newTask) {
-    addTaskToUI(newTask);
-    toggleModal(false);
-    elements.filterDiv.style.display = "none"; // Also hide the filter overlay
-    event.target.reset();
-    refreshTasksUI();
+    ////Checks if newTask is truthy (i.e., a task was successfully created)
+    addTaskToUI(newTask); //Adds the newly created task to the UI by calling addTaskToUI with the newTask object.
+    toggleModal(false); //Closes the modal window by calling toggleModal with false, hiding the modal where the task was added.
+    elements.filterDiv.style.display = "none"; // Also hide the filter overlay This ensures the UI is clean after adding a task.
+    event.target.reset(); //Resets the form fields to their initial state, clearing the input fields after submission.
+    refreshTasksUI(); //Calls refreshTasksUI() to update the task display according to the latest data and state. This ensures the UI reflects any changes, such as new tasks or updated information.
   }
 }
 
 // Toggle the visibility of the sidebar
 
 function toggleSidebar(show) {
-  const sidebar = document.querySelector(".side-bar");
-  sidebar.style.display = show ? "block" : "none";
-  elements.showSideBarBtn.style.display = show ? "none" : "block";
+  const sidebar = document.querySelector(".side-bar"); //Selects the sidebar element from the DOM using the class name "side-bar".
+  sidebar.style.display = show ? "block" : "none"; //If show is true, the sidebar’s display style is set to "block", making it visible.
+  elements.showSideBarBtn.style.display = show ? "none" : "block"; //If show is true, the showSideBarBtn button is hidden, and vice versa.
 }
 
 // Toggle between light and dark themes
-function toggleTheme() {
+function toggleTheme() { /
   // get logo from the DOM
   const logo = document.getElementById("logo");
   const isLightTheme = document.body.classList.toggle("light-theme");
   logo.setAttribute(
     "src",
-    isLightTheme ? "./assets/logo-light.svg" : "./assets/logo-dark.svg"
+    isLightTheme ? "./assets/newlogo2.png" : "./assets/newlogo2.png" //change picture to my own
   );
 }
 // Open the modal for editing a task
@@ -311,7 +312,7 @@ function openEditTaskModal(task) {
   cancelEditBtn.addEventListener(
     "click",
     () => (elements.editTaskModalWindow.style.display = "none")
-  );
+  );//To close or hide the edit task modal window when the cancel button is clicked.
 
   // Call saveTaskChanges upon click of Save Changes button
   saveTaskChangesBtn.addEventListener("click", function saveEdit() {
@@ -324,13 +325,14 @@ function openEditTaskModal(task) {
   // Delete task using a helper function and close the task modal
   deleteTaskBtn.addEventListener("click", function deleteEdit() {
     deleteTask(task.id);
-    elements.editTaskModalWindow.style.display = "none";
-    elements.newTaskModalWindow.style.display = "none";
-    refreshTasksUI();
-    deleteTaskBtn.removeEventListener("click", deleteEdit);
+    elements.editTaskModalWindow.style.display = "none"; //Hides the edit task modal window by setting its style.display property to "none".
+    elements.newTaskModalWindow.style.display = "none";//Hides the new task modal window (if it’s open) by setting its style.display property to "none".
+    refreshTasksUI();//Calls the refreshTasksUI function to update the user interface, typically to reflect the changes made after deleting the task.
+    deleteTaskBtn.removeEventListener("click", deleteEdit);//Removes the deleteEdit event listener from deleteTaskBtn.
   });
 
-  toggleModal(true, elements.editTaskModal); // Show the edit task modal
+  toggleModal(true, elements.editTaskModal); // SThis line is used to ensure that the edit task modal is displayed, allowing the user to interact with it.
+
 }
 
 function saveTaskChanges(taskId) {
