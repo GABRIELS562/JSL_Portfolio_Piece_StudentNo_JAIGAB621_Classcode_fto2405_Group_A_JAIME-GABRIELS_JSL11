@@ -284,7 +284,7 @@ function toggleSidebar(show) {
 }
 
 // Toggle between light and dark themes
-function toggleTheme() { /
+function toggleTheme() {
   // get logo from the DOM
   const logo = document.getElementById("logo");
   const isLightTheme = document.body.classList.toggle("light-theme");
@@ -312,7 +312,7 @@ function openEditTaskModal(task) {
   cancelEditBtn.addEventListener(
     "click",
     () => (elements.editTaskModalWindow.style.display = "none")
-  );//To close or hide the edit task modal window when the cancel button is clicked.
+  ); //To close or hide the edit task modal window when the cancel button is clicked.
 
   // Call saveTaskChanges upon click of Save Changes button
   saveTaskChangesBtn.addEventListener("click", function saveEdit() {
@@ -326,13 +326,12 @@ function openEditTaskModal(task) {
   deleteTaskBtn.addEventListener("click", function deleteEdit() {
     deleteTask(task.id);
     elements.editTaskModalWindow.style.display = "none"; //Hides the edit task modal window by setting its style.display property to "none".
-    elements.newTaskModalWindow.style.display = "none";//Hides the new task modal window (if it’s open) by setting its style.display property to "none".
-    refreshTasksUI();//Calls the refreshTasksUI function to update the user interface, typically to reflect the changes made after deleting the task.
-    deleteTaskBtn.removeEventListener("click", deleteEdit);//Removes the deleteEdit event listener from deleteTaskBtn.
+    elements.newTaskModalWindow.style.display = "none"; //Hides the new task modal window (if it’s open) by setting its style.display property to "none".
+    refreshTasksUI(); //Calls the refreshTasksUI function to update the user interface, typically to reflect the changes made after deleting the task.
+    deleteTaskBtn.removeEventListener("click", deleteEdit); //Removes the deleteEdit event listener from deleteTaskBtn.
   });
 
   toggleModal(true, elements.editTaskModal); // SThis line is used to ensure that the edit task modal is displayed, allowing the user to interact with it.
-
 }
 
 function saveTaskChanges(taskId) {
