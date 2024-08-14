@@ -73,32 +73,34 @@ function fetchAndDisplayBoardsAndTasks() {
     const localStorageBoard = JSON.parse(localStorage.getItem("activeBoard"));
     activeBoard = localStorageBoard ? localStorageBoard : boards[0]; /// replaced ; with :
     elements.headerBoardName.textContent = activeBoard;
-    styleActiveBoard(activeBoard);
-    refreshTasksUI();
+    styleActiveBoard(activeBoard); // adds active class to active board
+    refreshTasksUI(); //he refreshTasksUI function likely filters tasks based on the active board and updates the task list or grid to show only the relevant tasks.
   }
 }
 
 // Creates different boards in the DOM
 // TASK: Fix Bugs
 function displayBoards(boards) {
-  const boardsContainer = document.getElementById("boards-nav-links-div");
+  const boardsContainer = document.getElementById("boards-nav-links-div"); // Select the boards container in HTML file
   boardsContainer.innerHTML = ""; // Clears the container
 
   boards.forEach((board) => {
+    // this line starts a loop that iterates over each element in the boards array. For each iteration, the current board name is stored in the board variable.
     const boardElement = document.createElement("button");
-    boardElement.textContent = board;
-    boardElement.classList.add("board-btn");
+    boardElement.textContent = board; //the text content of the boardElement (the button) is set to the current board’s name.
+    boardElement.classList.add("board-btn"); // Adds a class of "board-btn" to the boardElement, for styling
 
     boardElement.addEventListener("click", () => {
+      // Added eventlistener for click to update headerBoardName
       //Added eventlistener for click to update headerBoardName
-      elements.headerBoardName.textContent = board;
-      filterAndDisplayTasksByBoard(board);
+      elements.headerBoardName.textContent = board; //When a board button is clicked, the textContent of the element identified by headerBoardName is updated to show the name of the clicked board. This visually indicates which board is currently active.
+      filterAndDisplayTasksByBoard(board); // function is below and will be explained there
       activeBoard = board; //assigns active board
-      localStorage.setItem("activeBoard", JSON.stringify(activeBoard));
-      styleActiveBoard(activeBoard); //////////////////////////////???????
+      localStorage.setItem("activeBoard", JSON.stringify(activeBoard)); //The current active board’s name is saved to localStorage using the setItem method.
+      styleActiveBoard(activeBoard); //function is below and will be explained there( Styling Applied)
     });
 
-    boardsContainer.appendChild(boardElement);
+    boardsContainer.appendChild(boardElement); // Append Button to Container: boardsContainer
   });
 }
 
@@ -106,38 +108,41 @@ function displayBoards(boards) {
 // TASK: Fix Bugs
 function filterAndDisplayTasksByBoard(boardName) {
   const tasks = getTasks(); // Fetch tasks from a simulated local storage function
-  const filteredTasks = tasks.filter((task) => task.board === boardName); // Added strict equality operator to filter tasks based on board name
+  const filteredTasks = tasks.filter((task) => task.board === boardName); // Added strict equality operator to filter ONLY tasks based on board name
 
   // Ensure the column titles are set outside of this function or correctly initialized before this function runs
 
   elements.columnDivs.forEach((column) => {
-    const status = column.getAttribute("data-status");
+    const status = column.getAttribute("data-status"); //For each column, this line retrieves the value of the data-status attribute (e.g., “To Do,” “In Progress,” "Done"), and stores it in the status variable. This attribute likely defines what type of tasks should be displayed in that column.
 
     // Reset column content while preserving the column title
     column.innerHTML = `<div class="column-head-div">
                           <span class="dot" id="${status}-dot"></span>
                           <h4 class="columnHeader">${status.toUpperCase()}</h4>
-                        </div>`;
+                        </div>`; //The innerHTML of each column is set to a new structure. This effectively clears any existing tasks in the column but preserves and sets up the column title and status indicator.
 
-    const tasksContainer = document.createElement("div");
+    const tasksContainer = document.createElement("div"); //A new <div> element called tasksContainer is created. This container will hold the individual tasks for this column. The tasksContainer is then appended to the current column.
+
     column.appendChild(tasksContainer);
 
-    filteredTasks
+    filteredTasks //The filteredTasks array is further filtered to include only tasks whose status matches the status of the current column. The forEach method is then used to iterate over these filtered tasks.
       .filter((task) => task.status === status)
       .forEach((task) => {
         // Added strict equality operator to filter tasks based on status
-        const taskElement = document.createElement("div");
+        const taskElement = document.createElement("div"); //For each task, a new <div> element called taskElement is created. This div represents the task in the UI. The task’s title is set as the text content, and a CSS class task-div is added for styling. The task’s ID is also set as a data-task-id attribute, allowing it to be referenced later if needed.
         taskElement.classList.add("task-div");
         taskElement.textContent = task.title;
         taskElement.setAttribute("data-task-id", task.id);
 
         // Listen for a click event on each task and open a modal
         taskElement.addEventListener("click", () => {
+          //An event listener is added to each taskElement. When the task is clicked, the openEditTaskModal function is called with the task object as a parameter. This likely opens a modal window for editing the task. The modal window’s display style is also set to block, making it visible.
+
           openEditTaskModal(task);
           elements.editTaskModalWindow.style.display = "block";
         });
 
-        tasksContainer.appendChild(taskElement);
+        tasksContainer.appendChild(taskElement); //Each taskElement (representing a task) is appended to the tasksContainer, which in turn is inside the respective column. This adds the task to the UI, making it visible under the correct status column.
       });
   });
 }
@@ -149,28 +154,33 @@ function refreshTasksUI() {
 // Styles the active board by adding an active class
 // TASK: Fix Bugs
 function styleActiveBoard(boardName) {
+  //The function uses document.querySelectorAll(".board-btn") to select all elements in the document with the class board-btn. This returns a NodeList of button elements representing different boards.
   document.querySelectorAll(".board-btn").forEach((btn) => {
+    //
     //Spelling of forEach fixed
 
     if (btn.textContent === boardName) {
-      btn.classList.add("active"); //This correctly adds the 'active' class to the button element.
+      //For each button, the code checks if the button’s textContent (the text displayed on the button) matches boardName.
+      btn.classList.add("active"); //This correctly adds the 'active' class to the button element.//
     } else {
       btn.classList.remove("active"); //This correctly removes the 'active' class to the button element.
     }
-  });
-}
+  }); //If the Text Matches: If the text of the button matches the boardName, the active class is added to the button using btn.classList.add("active"). This visually indicates that this button corresponds to the currently active board.
+} //If the Text Doesn’t Match: If the text of the button does not match the boardName, the active class is removed from the button using btn.classList.remove("active"). This ensures that only the active board’s button is highlighted, and all others are reset to their default state.
 
 function addTaskToUI(task) {
   const column = document.querySelector(
-    '.column-div[data-status="${task.status}"]'
+    //This line attempts to find a column in the UI that corresponds to the status of the task by using a CSS selector.
+    '.column-div[data-status="${task.status}"]' //The data-status attribute of the column-div element is expected to match the task’s status.
   );
   if (!column) {
-    console.error(`Column not found for status: ${task.status}`);
+    console.error(`Column not found for status: ${task.status}`); //If no column is found for the given status (column is null or undefined), an error message is logged to the console.
     return;
   }
 
   let tasksContainer = column.querySelector(".tasks-container");
   if (!tasksContainer) {
+    //The code attempts to find a tasks-container within the identified column. If it is not found, an error message is logged to the console.
     console.warn(
       `Tasks container not found for status: ${task.status}, creating one.`
     );
@@ -181,23 +191,27 @@ function addTaskToUI(task) {
 
   const taskElement = document.createElement("div");
   taskElement.className = "task-div";
-  taskElement.textContent = task.title; // Modify as needed
-  taskElement.setAttribute("data-task-id", task.id);
+  taskElement.textContent = task.title; // Modify as needed. The textContent is set to the task’s title, so the user can see what the task is about.
+  taskElement.setAttribute("data-task-id", task.id); //The setAttribute method is used to add a data-task-id attribute, which stores the task’s unique identifier (id).
 
-  tasksContainer.appendChild(taskElement);
+  tasksContainer.appendChild(taskElement); //Finally, the newly created taskElement is appended to the tasksContainer within the appropriate column.
 }
 
 function setupEventListeners() {
+  //It does not take any parameters and is intended to be called once during the initialization of the application to set up all necessary event listeners.
+
   // Cancel editing task event listener
-  const cancelEditBtn = document.getElementById("cancel-edit-btn");
+  const cancelEditBtn = document.getElementById("cancel-edit-btn"); //
   cancelEditBtn.addEventListener("click", () => {
-    toggleModal(false, elements.editTaskModal);
-    elements.filterDiv.style.display = "none";
+    ////An event listener is attached to the button, listening for a click event.
+    toggleModal(false, elements.editTaskModal); //When clicked, the modal for editing a task (elements.editTaskModal) is closed by calling toggleModal(false, elements.editTaskModal).
+    elements.filterDiv.style.display = "none"; //The filter overlay is also hidden by setting its display property to none.
   }); // corrected event listener
 
-  // Cancel adding new task event listener
+  // Cancel adding new task event listener> similar to previous function
   const cancelAddTaskBtn = document.getElementById("cancel-add-task-btn");
   cancelAddTaskBtn.addEventListener("click", () => {
+    //
     toggleModal(false);
     elements.filterDiv.style.display = "none"; // Also hide the filter overlay
   });
@@ -209,16 +223,19 @@ function setupEventListeners() {
     elements.filterDiv.style.display = "none"; // Also hide the filter overlay
   });
   // Show sidebar event listener
-  elements.hideSideBarBtn.addEventListener("click", () => toggleSidebar(false)); //fixed event listener
-  elements.showSideBarBtn.addEventListener("click", () => toggleSidebar(true)); // fixed event Listener
+  elements.hideSideBarBtn.addEventListener("click", () => toggleSidebar(false)); //fixed event listener 	These buttons control the visibility of the sidebar.
+  elements.showSideBarBtn.addEventListener("click", () => toggleSidebar(true)); // fixed event ListenerWhen hideSideBarBtn is clicked, the sidebar is hidden by calling toggleSidebar(false).
+  //Conversely, when showSideBarBtn is clicked, the sidebar is shown by calling toggleSidebar(true).
 
   // Theme switch event listener
   elements.toggleTheme.addEventListener("change", toggleTheme);
 
   // Show Add New Task Modal event listener
   elements.addNewTaskBtn.addEventListener("click", () => {
+    //When the theme switch is toggled (usually a checkbox or switch input), the toggleTheme function is called, changing the theme of the application.
+
     toggleModal(true);
-    elements.filterDiv.style.display = "block"; // Also show the filter overlay
+    elements.filterDiv.style.display = "block"; // Also show the filter overlay, When the button is clicked, the modal for adding a new task is shown, and the filterDiv overlay is made visible.
   });
 
   // Add new task form submission event listener
@@ -232,7 +249,7 @@ function setupEventListeners() {
 function toggleModal(show, modal = elements.modalWindow) {
   modal.style.display = show ? "block" : "none"; //replaced function with tenary operator
 }
-
+//The toggleModal function is a concise way to control the visibility of modals within your application. By using the ternary operator, it efficiently toggles the modal’s display style based on the show boolean value, making the code more readable and compact.
 /*************************************************************************************************************************************************
  * COMPLETE FUNCTION CODE
  * **********************************************************************************************************************************************/
@@ -338,15 +355,16 @@ function saveTaskChanges(taskId) {
 /*************************************************************************************************************************************************/
 // Initialize the application when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
-  initializeData();
-  init(); // init is called after the DOM is fully loaded
+  //The "DOMContentLoaded" event is fired when the HTML document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading.
+  initializeData(); //This function typically initializes or sets up any necessary data, such as setting initial values in localStorage, if not already present.
+  init(); // init is called after the DOM is fully loaded ( function Below )
 });
 
 function init() {
-  setupEventListeners();
-  const showSidebar = localStorage.getItem("showSideBar") === "true";
-  toggleSidebar(showSidebar);
+  setupEventListeners(); //	It sets up various event listeners throughout the application, such as handling clicks, form submissions, and other user interactions.
+  const showSidebar = localStorage.getItem("showSideBar") === "true"; //This determines whether the sidebar should be shown or hidden based on the user’s previous state.
+  toggleSidebar(showSidebar); //If showSidebar is true, the sidebar will be shown; if false, it will be hidden.
   const isLightTheme = localStorage.getItem("light-theme") === "enabled";
-  document.body.classList.toggle("light-theme", isLightTheme);
-  fetchAndDisplayBoardsAndTasks(); // Initial display of boards and tasks
+  document.body.classList.toggle("light-theme", isLightTheme); //This determines whether the light theme should be applied based on the user’s previous choice.
+  fetchAndDisplayBoardsAndTasks(); // This function retrieves tasks and boards from localStorage and displays them on the UI.
 }
